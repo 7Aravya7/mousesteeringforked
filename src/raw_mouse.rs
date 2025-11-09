@@ -33,7 +33,7 @@ impl RawMouse {
                 let mut rid = RAWINPUTDEVICE {
                     usUsagePage: 0x01,
                     usUsage: 0x02,
-                    dwFlags: RAWINPUTDEVICE_FLAGS(0),
+                    dwFlags: RIDEV_INPUTSINK,
                     hwndTarget: hwnd,
                 };
 
