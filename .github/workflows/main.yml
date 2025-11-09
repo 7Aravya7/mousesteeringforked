@@ -16,9 +16,15 @@ jobs:
           targets: x86_64-pc-windows-msvc
       - name: Build
         run: cargo build --release
+      - name: Prepare Release Package
+        run: |
+          mkdir release-package
+          copy target\release\*.exe release-package\
+          powershell -Command "$lines = Get-Content config_example.toml; $output = @(); $skipComments = $false; foreach ($line in $lines) { if ($line -match '^# List of keycodes') { $skipComments = $true }; if (-not $skipComments) { $output += $line } }; $output | Set-Content release-package\config.toml -Encoding UTF8"
+          powershell -Command "$header = '# CHANGES MADE HERE WILL NOT BE READ BY THE APPLICATION', '# Use `config.toml` instead'; $content = Get-Content config_example.toml; ($header + $content) | Set-Content release-package\example.toml -Encoding UTF8"
+        shell: cmd
       - name: Upload executable
         uses: actions/upload-artifact@v4
         with:
           name: MouseSteering-Windows
-          path: target/release/*.exe
-
+          path: release-package/*
