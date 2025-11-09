@@ -1,4 +1,4 @@
-# Mouse Steering by [RasyaJusticio](https://github.com/RasyaJusticio)
+# Mouse Steering by [Aravya Singh](https://github.com/7Aravya7)
 
 ![Demo Of Mouse Steering](/assets//demo.gif)
 
@@ -6,3 +6,7 @@ Mouse Steering Controller is a Rust application that enables mouse input to cont
 
 # Installation
 This package requires the [ViGEmBus](https://github.com/nefarius/ViGEmBus/releases) drivers to function.
+
+# Credits
+this is forked and i have slightly changed it only
+Original creator [RasyaJusticio](https://github.com/RasyaJusticio)
