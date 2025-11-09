@@ -1,12 +1,12 @@
-screen_width = 1280
-screen_height = 720
+screen_width = 1280    # Mouse sensitivity for horizontal axis(higher value = lower sensitivity)
+screen_height = 720    # Mouse sensitivity for vertical/thrust-brake axis(higher value = lower sensitivity)
 
 [steering_config]
 enabled = true
 toggle_key = "Z" # You can read all of the keycodes below
 precise_input = true
 snap_input = true
-snap_threshold = 0.1 # Ranges from 0.0 to 1.0
+snap_threshold = 0.1 # Ranges from 0.0 to 1.0 Dead zone at center
 edge_scaling = false
 scaling_threshold = 0.5 # Ranges from 0.0 to 1.0
 
