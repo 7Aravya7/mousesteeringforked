@@ -2,6 +2,7 @@ use std::sync::{Arc, Mutex};
 use windows::Win32::Foundation::*;
 use windows::Win32::UI::Input::*;
 use windows::Win32::UI::WindowsAndMessaging::*;
+use windows::core::PCWSTR;
 
 pub struct RawMouse {
     delta: Arc<Mutex<(i32, i32)>>,
@@ -14,13 +15,16 @@ impl RawMouse {
 
         std::thread::spawn(move || {
             unsafe {
+                let class_name: Vec<u16> = "Static\0".encode_utf16().collect();
+                let window_name: Vec<u16> = "RawMouseInput\0".encode_utf16().collect();
+                
                 let hwnd = CreateWindowExW(
                     WINDOW_EX_STYLE(0),
-                    w!("Static"),
-                    w!("RawMouseInput"),
+                    PCWSTR(class_name.as_ptr()),
+                    PCWSTR(window_name.as_ptr()),
                     WINDOW_STYLE(0),
                     0, 0, 0, 0,
-                    HWND(0),
+                    HWND(std::ptr::null_mut()),
                     None,
                     None,
                     None,
@@ -41,7 +45,7 @@ impl RawMouse {
                         if msg.message == WM_INPUT {
                             let mut size = 0u32;
                             GetRawInputData(
-                                HRAWINPUT(msg.lParam.0),
+                                HRAWINPUT(msg.lParam.0 as *mut _),
                                 RID_INPUT,
                                 None,
                                 &mut size,
@@ -50,7 +54,7 @@ impl RawMouse {
 
                             let mut buffer = vec![0u8; size as usize];
                             GetRawInputData(
-                                HRAWINPUT(msg.lParam.0),
+                                HRAWINPUT(msg.lParam.0 as *mut _),
                                 RID_INPUT,
                                 Some(buffer.as_mut_ptr() as *mut _),
                                 &mut size,
@@ -60,7 +64,7 @@ impl RawMouse {
                             let raw = &*(buffer.as_ptr() as *const RAWINPUT);
                             if raw.header.dwType == RIM_TYPEMOUSE.0 {
                                 let mouse = raw.data.mouse;
-                                if mouse.usFlags == MOUSE_MOVE_RELATIVE.0 as u16 {
+                                if mouse.usFlags == MOUSE_STATE(MOUSE_MOVE_RELATIVE.0 as u16) {
                                     let mut d = delta_clone.lock().unwrap();
                                     d.0 += mouse.lLastX;
                                     d.1 += mouse.lLastY;
